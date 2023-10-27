@@ -1,0 +1,9 @@
+name: Soulbound
+main: net.azisaba.soulbound.Soulbound
+version: @version@
+api-version: 1.13
+depend:
+  - LoreEditor
+commands:
+  soulbound:
+    permission: soulbound.command
