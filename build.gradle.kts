@@ -20,28 +20,15 @@ repositories {
         url = uri("https://oss.sonatype.org/content/groups/public/")
     }
     maven {
-        name = "jitpack"
-        url = uri("https://jitpack.io")
-    }
-    maven {
         name = "azisaba-repo"
         url = uri("https://repo.azisaba.net/repository/maven-public/")
     }
-    if (properties["azisabaNmsUsername"] != null && properties["azisabaNmsPassword"] != null) {
-        maven {
-            name = "azisabaNms"
-            credentials(PasswordCredentials::class)
-            url = uri("https://repo.azisaba.net/repository/nms/")
-        }
-    }
-    mavenLocal()
 }
 
 dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly("net.azisaba.loreeditor:common:1.0.0-SNAPSHOT:all")
     compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT")
 }
 
 tasks {

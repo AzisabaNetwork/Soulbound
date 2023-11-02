@@ -3,7 +3,6 @@ package net.azisaba.soulbound.listener;
 import net.azisaba.soulbound.util.ItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.block.ShulkerBox;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftInventoryCustom;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,11 +18,20 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
 public class SoulboundListener implements Listener {
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerDropITem(PlayerDropItemEvent e) {
+        if (e.getPlayer().getUniqueId().equals(ItemUtil.getSoulbound(e.getItemDrop().getItemStack()))) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(ChatColor.RED + "このアイテムはドロップできません。");
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerAttemptPickupItem(PlayerAttemptPickupItemEvent e) {
         if (e.getPlayer().hasPermission("soulbound.bypass")) {
@@ -116,7 +124,7 @@ public class SoulboundListener implements Listener {
             player.sendMessage(ChatColor.RED + "このアイテムはクリックできません。");
             return;
         }
-        if (e.getInventory().getHolder() instanceof ShulkerBox || e.getInventory() instanceof CraftInventoryCustom) {
+        if (e.getInventory().getHolder() instanceof ShulkerBox || e.getInventory().getClass().getName().endsWith(".inventory.CraftInventoryCustom")) {
             if (e.getClickedInventory() != null && e.getClickedInventory().getType() == InventoryType.PLAYER && ItemUtil.getSoulbound(e.getCurrentItem()) != null) {
                 e.setCancelled(true);
                 player.sendMessage(ChatColor.RED + "このアイテムは取引できません。");

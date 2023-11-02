@@ -1,15 +1,15 @@
 package net.azisaba.soulbound.commands;
 
+import net.azisaba.loreeditor.api.item.CraftItemStack;
+import net.azisaba.loreeditor.api.item.tag.CompoundTag;
 import net.azisaba.soulbound.Soulbound;
 import net.azisaba.soulbound.util.ItemUtil;
-import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -78,11 +78,12 @@ public class SoulboundCommand implements TabExecutor {
                 }
                 //noinspection deprecation
                 UUID uuid = args[1].length() == 36 ? UUID.fromString(args[1]) : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
-                net.minecraft.server.v1_15_R1.ItemStack nms = CraftItemStack.asNMSCopy(stack);
-                NBTTagCompound tag = nms.getOrCreateTag();
+                net.azisaba.loreeditor.api.item.ItemStack nms = CraftItemStack.STATIC.asNMSCopy(stack);
+                if (nms == null) throw new RuntimeException("item is null?");
+                CompoundTag tag = nms.getOrCreateTag();
                 tag.setString("soulbound", uuid.toString());
                 nms.setTag(tag);
-                player.getInventory().setItemInMainHand(CraftItemStack.asCraftMirror(nms));
+                player.getInventory().setItemInMainHand(CraftItemStack.STATIC.asCraftMirror(nms));
                 break;
             }
         }

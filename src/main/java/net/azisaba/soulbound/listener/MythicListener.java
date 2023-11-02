@@ -1,10 +1,10 @@
 package net.azisaba.soulbound.listener;
 
+import net.azisaba.loreeditor.api.item.CraftItemStack;
+import net.azisaba.loreeditor.api.item.tag.CompoundTag;
 import net.azisaba.soulbound.Soulbound;
 import net.azisaba.soulbound.util.ItemUtil;
-import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -27,11 +27,13 @@ public class MythicListener implements Listener {
                 ItemStack item = inventory.getItem(i);
                 if (item == null) continue;
                 if (plugin.getSoulboundMythicItems().contains(ItemUtil.getMythicType(item))) {
-                    net.minecraft.server.v1_15_R1.ItemStack nms = CraftItemStack.asNMSCopy(item);
-                    NBTTagCompound tag = nms.getOrCreateTag();
-                    tag.setString("soulbound", e.getPlayer().getUniqueId().toString());
-                    nms.setTag(tag);
-                    inventory.setItem(i, CraftItemStack.asCraftMirror(nms));
+                    net.azisaba.loreeditor.api.item.ItemStack nms = CraftItemStack.STATIC.asNMSCopy(item);
+                    if (nms != null) {
+                        CompoundTag tag = nms.getOrCreateTag();
+                        tag.setString("soulbound", e.getPlayer().getUniqueId().toString());
+                        nms.setTag(tag);
+                        inventory.setItem(i, CraftItemStack.STATIC.asCraftMirror(nms));
+                    }
                 }
             }
         }, 20 * 5);
