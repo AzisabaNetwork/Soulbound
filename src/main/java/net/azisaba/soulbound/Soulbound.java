@@ -35,7 +35,7 @@ public class Soulbound extends JavaPlugin {
             }
         });
         Objects.requireNonNull(getCommand("soulbound")).setExecutor(new SoulboundCommand(this));
-        Bukkit.getPluginManager().registerEvents(new SoulboundListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SoulboundListener(getConfig().getBoolean("keep-soulbound-on-death", false)), this);
         Bukkit.getPluginManager().registerEvents(new MythicListener(this), this);
     }
 

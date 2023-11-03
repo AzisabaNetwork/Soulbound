@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
@@ -24,6 +25,12 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public class SoulboundListener implements Listener {
+    private final boolean keepSoulboundOnDeath;
+
+    public SoulboundListener(boolean keepSoulboundOnDeath) {
+        this.keepSoulboundOnDeath = keepSoulboundOnDeath;
+    }
+
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDropITem(PlayerDropItemEvent e) {
         if (e.getPlayer().getUniqueId().equals(ItemUtil.getSoulbound(e.getItemDrop().getItemStack()))) {
@@ -136,6 +143,17 @@ public class SoulboundListener implements Listener {
                     player.sendMessage(ChatColor.RED + "このアイテムは取引できません。");
                 }
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        if (keepSoulboundOnDeath) {
+            e.getDrops().removeIf(stack -> {
+                boolean keep = ItemUtil.getSoulbound(stack) != null;
+                if (keep) e.getItemsToKeep().add(stack);
+                return keep;
+            });
         }
     }
 }
