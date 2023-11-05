@@ -1,6 +1,8 @@
 package net.azisaba.soulbound.listener;
 
+import net.azisaba.soulbound.Soulbound;
 import net.azisaba.soulbound.util.ItemUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.ItemFrame;
@@ -19,20 +21,23 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class SoulboundListener implements Listener {
-    private final boolean keepSoulboundOnDeath;
+    private final Soulbound plugin;
 
-    public SoulboundListener(boolean keepSoulboundOnDeath) {
-        this.keepSoulboundOnDeath = keepSoulboundOnDeath;
+    public SoulboundListener(@NotNull Soulbound plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDropITem(PlayerDropItemEvent e) {
+        if (plugin.allowDrop) return;
         if (e.getPlayer().getUniqueId().equals(ItemUtil.getSoulbound(e.getItemDrop().getItemStack()))) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(ChatColor.RED + "このアイテムはドロップできません。");
@@ -148,12 +153,25 @@ public class SoulboundListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if (keepSoulboundOnDeath) {
+        if (plugin.keepSoulboundOnDeath) {
             e.getDrops().removeIf(stack -> {
                 boolean keep = ItemUtil.getSoulbound(stack) != null;
                 if (keep) e.getItemsToKeep().add(stack);
                 return keep;
             });
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
+        if (plugin.preventShopChestCommands && Bukkit.getPluginManager().isPluginEnabled("ShopChest") &&
+                (ItemUtil.getSoulbound(e.getPlayer().getInventory().getItemInMainHand()) != null ||
+                        ItemUtil.getSoulbound(e.getPlayer().getInventory().getItemInOffHand()) != null)) {
+            String cmd = e.getMessage().split(" ")[0];
+            if (cmd.equals("/shopc") || cmd.equals("/shopchest:shopc")) {
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(ChatColor.RED + "このアイテムを持った状態ではこのコマンドは実行できません。");
+            }
         }
     }
 }

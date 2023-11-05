@@ -17,11 +17,18 @@ import java.util.*;
 
 public class Soulbound extends JavaPlugin {
     private final Set<String> soulboundMythicItems = new HashSet<>();
+    public boolean keepSoulboundOnDeath = false;
+    public boolean allowDrop = true;
+    public boolean preventShopChestCommands = true;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         soulboundMythicItems.addAll(getConfig().getStringList("soulbound-mythic-items"));
+        keepSoulboundOnDeath = getConfig().getBoolean("keep-soulbound-on-death", false);
+        allowDrop = getConfig().getBoolean("allow-drop", true);
+        preventShopChestCommands = getConfig().getBoolean("prevent-shopchest-commands", true);
+
         EventBus.INSTANCE.register(this, ItemEvent.class, 128, e -> {
             UUID soulbound = ItemUtil.getSoulbound(e.getBukkitItem());
             if (soulbound != null) {
@@ -34,8 +41,10 @@ public class Soulbound extends JavaPlugin {
                 }
             }
         });
+
         Objects.requireNonNull(getCommand("soulbound")).setExecutor(new SoulboundCommand(this));
-        Bukkit.getPluginManager().registerEvents(new SoulboundListener(getConfig().getBoolean("keep-soulbound-on-death", false)), this);
+
+        Bukkit.getPluginManager().registerEvents(new SoulboundListener(this), this);
         Bukkit.getPluginManager().registerEvents(new MythicListener(this), this);
     }
 
