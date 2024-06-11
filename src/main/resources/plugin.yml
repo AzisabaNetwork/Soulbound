@@ -2,6 +2,8 @@ name: Soulbound
 main: net.azisaba.soulbound.Soulbound
 version: @version@
 api-version: 1.13
+softdepend:
+  - ShopChest
 depend:
   - LoreEditor
 commands:

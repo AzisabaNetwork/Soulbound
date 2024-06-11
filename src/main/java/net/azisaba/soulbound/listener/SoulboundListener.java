@@ -1,5 +1,6 @@
 package net.azisaba.soulbound.listener;
 
+import de.epiceric.shopchest.event.ShopBuySellEvent;
 import net.azisaba.soulbound.Soulbound;
 import net.azisaba.soulbound.util.ItemUtil;
 import org.bukkit.Bukkit;
@@ -159,19 +160,6 @@ public class SoulboundListener implements Listener {
                 if (keep) e.getItemsToKeep().add(stack);
                 return keep;
             });
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
-        if (plugin.preventShopChestCommands && Bukkit.getPluginManager().isPluginEnabled("ShopChest") &&
-                (ItemUtil.getSoulbound(e.getPlayer().getInventory().getItemInMainHand()) != null ||
-                        ItemUtil.getSoulbound(e.getPlayer().getInventory().getItemInOffHand()) != null)) {
-            String cmd = e.getMessage().split(" ")[0];
-            if (cmd.equals("/shopc") || cmd.equals("/shopchest:shopc")) {
-                e.setCancelled(true);
-                e.getPlayer().sendMessage(ChatColor.RED + "このアイテムを持った状態ではこのコマンドは実行できません。");
-            }
         }
     }
 }

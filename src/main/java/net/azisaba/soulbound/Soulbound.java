@@ -7,6 +7,7 @@ import net.azisaba.loreeditor.libs.net.kyori.adventure.text.format.NamedTextColo
 import net.azisaba.loreeditor.libs.net.kyori.adventure.text.format.TextDecoration;
 import net.azisaba.soulbound.commands.SoulboundCommand;
 import net.azisaba.soulbound.listener.MythicListener;
+import net.azisaba.soulbound.listener.ShopChestListener;
 import net.azisaba.soulbound.listener.SoulboundListener;
 import net.azisaba.soulbound.util.ItemUtil;
 import org.bukkit.Bukkit;
@@ -46,6 +47,9 @@ public class Soulbound extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new SoulboundListener(this), this);
         Bukkit.getPluginManager().registerEvents(new MythicListener(this), this);
+        if (Bukkit.getPluginManager().isPluginEnabled("ShopChest")) {
+            Bukkit.getPluginManager().registerEvents(new ShopChestListener(), this);
+        }
     }
 
     @Override

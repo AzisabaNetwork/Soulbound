@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.azisaba"
-version = "1.0.0-SNAPSHOT"
+version = "1.1.0-SNAPSHOT"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
@@ -23,12 +23,16 @@ repositories {
         name = "azisaba-repo"
         url = uri("https://repo.azisaba.net/repository/maven-public/")
     }
+    maven {
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
 }
 
 dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly("net.azisaba.loreeditor:common:1.0.0-SNAPSHOT:all")
     compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
+    compileOnly("de.epiceric:ShopChest:1.13-SNAPSHOT")
 }
 
 tasks {

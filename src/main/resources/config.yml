@@ -2,4 +2,3 @@ soulbound-mythic-items:
   - soulbound_item
 keep-soulbound-on-death: false
 allow-drop: true
-prevent-shopchest-commands: true
